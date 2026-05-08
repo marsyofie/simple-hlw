@@ -13,8 +13,8 @@ const props: CdkStackProps = {
   },
   removalPolicy: cdk.RemovalPolicy.DESTROY,
   env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION
+    account: '806388643308',
+    region: 'ap-southeast-1'
   }
 }
 
