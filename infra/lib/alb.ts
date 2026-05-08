@@ -32,17 +32,20 @@ export class Alb extends Construct {
       vpc,
       allowAllOutbound: true,
     });
-
-    const cloudFrontPrefixList = ec2.PrefixList.fromLookup(this, 'CloudFrontPrefixList', {
-      prefixListName: 'com.amazonaws.global.cloudfront.origin-facing',
-    });
-
-    albSg.addIngressRule(Peer.prefixList(cloudFrontPrefixList.prefixListId), Port.tcp(443), 'Allow HTTPS from CloudFront only');
+    albSg.addIngressRule(Peer.ipv4("0.0.0.0/0"), Port.tcp(80), 'Allow from anyone on port 80');
+    albSg.addIngressRule(Peer.ipv4("0.0.0.0/0"), Port.tcp(443), 'Allow from anyone on port 443');
     
     this.Alb = new ApplicationLoadBalancer(this, 'ALB', {
       vpc,
       internetFacing,
       securityGroup: albSg,
+    });
+
+    this.Alb.addRedirect({
+      sourceProtocol: ApplicationProtocol.HTTP,
+      sourcePort: 80,
+      targetProtocol: ApplicationProtocol.HTTPS,
+      targetPort: 443,
     });
 
     this.AlbListener = this.Alb.addListener("Listener port 443", {
@@ -54,7 +57,6 @@ export class Alb extends Construct {
         messageBody: 'not found',
       }),
       sslPolicy: SslPolicy.RECOMMENDED,
-      open:false,
     });
   }
 }

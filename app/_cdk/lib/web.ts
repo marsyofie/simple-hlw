@@ -8,17 +8,15 @@ import {
 } from 'aws-cdk-lib';
 import * as autoscaling from 'aws-cdk-lib/aws-autoscaling';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
-import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
-import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import { AwsLogDriver, ContainerImage } from 'aws-cdk-lib/aws-ecs';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import * as route53 from 'aws-cdk-lib/aws-route53';
-import * as route53Targets from 'aws-cdk-lib/aws-route53-targets';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as targets from 'aws-cdk-lib/aws-route53-targets';
 
 export interface WebProps {
   zoneName: string;
@@ -173,28 +171,12 @@ export class Web extends Construct {
       priority: 5,
     });
 
-    const distribution = new cloudfront.Distribution(this, 'Distribution', {
-      certificate,
-      domainNames: [ recordName ],
-      defaultBehavior: {
-        origin: new origins.LoadBalancerV2Origin(loadBalancer, {
-          protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
-        }),
-        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-        originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
-        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      },
-    });
-
-    const cloudFrontAliasTarget = route53.RecordTarget.fromAlias(
-      new route53Targets.CloudFrontTarget(distribution)
-    );
-
-    new route53.ARecord(this, 'CloudFrontAlias', {
+    new route53.ARecord(this, 'RecordAlias', {
       zone: hostedZone,
       recordName,
-      target: cloudFrontAliasTarget,
+      target: route53.RecordTarget.fromAlias(
+        new targets.LoadBalancerTarget(loadBalancer)
+      ),
     });
   }
 }
