@@ -8,7 +8,7 @@ const props: InfraStackProps = {
   vpcConf: {
     vpcCidr: "10.0.0.0/16",
     maxAzs: 2,
-    natGateways: 1,
+    natGateways: 1
   },
   rdsConf: {
     instanceType: new ec2.InstanceType("t3.micro"),
