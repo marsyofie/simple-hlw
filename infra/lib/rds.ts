@@ -51,6 +51,5 @@ export class Rds extends Construct {
       removalPolicy,
       parameterGroup,
     });
-
   }
 }
