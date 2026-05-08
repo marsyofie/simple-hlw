@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib/core';
-import { CdkStack, CdkStackProps } from '../lib/cdk-stack';
+import { CdkStack, CdkStackProps } from '../lib/_cdk-stack';
 
 const props: CdkStackProps = {
   zoneName: "nullstack.my.id",
@@ -20,4 +20,3 @@ const props: CdkStackProps = {
 
 const app = new cdk.App();
 new CdkStack(app, 'ShwAppStack', props);
-
