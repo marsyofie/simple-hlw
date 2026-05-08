@@ -121,6 +121,8 @@ export class Web extends Construct {
       circuitBreaker: { rollback: true },
       enableExecuteCommand: true,
       propagateTags: ecs.PropagatedTagSource.SERVICE,
+      minHealthyPercent: 100,
+      maxHealthyPercent: 200,
     });
 
     rdsSecurityGroup.connections.allowFrom(this.service, ec2.Port.tcp(3306), 'Allow MySQL from ECS only');
