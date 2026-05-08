@@ -39,7 +39,6 @@ export class Alb extends Construct {
 
     albSg.addIngressRule(Peer.prefixList(cloudFrontPrefixList.prefixListId), Port.tcp(443), 'Allow HTTPS from CloudFront only');
     
-    // Buat Application Load Balancer
     this.Alb = new ApplicationLoadBalancer(this, 'ALB', {
       vpc,
       internetFacing,
