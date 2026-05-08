@@ -49,5 +49,5 @@ app.use((err, _req, res, _next) => {
 });
 
 app.listen(PORT, () => {
-  log("INFO", "server started", { port: PORT });
+  log("INFO", "server started!", { port: PORT });
 });
