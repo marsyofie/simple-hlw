@@ -101,7 +101,7 @@ jobs:
         run: npm ci
 
       - name: Build app CDK
-        working-directory: app/cdk
+        working-directory: app/_cdk
         run: npm run build
 
       - name: Deploy app stack
